@@ -1,3 +1,43 @@
 PyMIR is a Python library for common tasks in Music Information Retrieval (MIR)
 
+Prerequisites
+---------------
+- Numpy
+- Scipy
+- FFmpeg executable
+
+PyMIR is divided into two main sections:
+- pymir.audio - for analyzing digital audio content
+- pymir.music - for analysis of high level objects within music theoretic frameworks
+
+PyMIR.Audio
+-------------
+
+- Feature extractors
+	- Zero-crossing rate
+	- Spectral moments (centroid, bandwidth, skewness, kurtosis)
+	- Spectral features (tilt, roll-off, flatness, crest factor, flux)
+	- Brightness
+
+- Onset detection / segmentation
+	- Attack time
+
+- Beat detection
+
+- Tempo detection
+
+- MFCC
+
+- Chroma
+
+- Filters
+
+- Effects
+
+
+PyMIR.Music
+-------------
+- Pitch Class sets
+
+- Interval vectors
 
