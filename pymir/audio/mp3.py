@@ -24,3 +24,4 @@ def load(mp3File):
     mp3Array = numpy.fromstring(rawData.read(),numpy.int16)
         
     #print mp3Array.size
+    return mp3Array
