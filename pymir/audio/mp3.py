@@ -2,7 +2,6 @@
 # Functions for decoding MP3 into PCM using FFmpeg
 
 import os
-import struct
 from subprocess import Popen, PIPE
 
 import numpy
