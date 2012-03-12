@@ -13,24 +13,23 @@ def energy(signal):
     >>> from test import chirp
     >>> s = chirp()
     >>> e = energy(s)
-
-    Below is for testing that I don't break things
-    >>> import hashlib
-    >>> hashlib.md5(e).hexdigest()
-    '615c65bb9e9055a75c32ceb5d309e597'
-    >>> hashlib.sha1(e).hexdigest()
-    '531b9ba53419bec6d4f679adc918e7449e17e452'
+    >>> e
+    array([ 0.26917694,  0.26901879,  0.26918094, ...,  0.18757919,
+            0.18656895,  0.18561012])
     """
     N = len(signal)
 
     windowSize = 256
     window = numpy.hamming(windowSize)
+    window.shape = (256,1)
     
     n = N - windowSize #number of windowed samples.
 
     # Create a view of signal who's shape is (n, windowSize). Use stride_tricks such that each stide jumps only one item.
-    s = stride_tricks.as_strided(signal,shape=(n,windowSize), strides=(signal.itemsize,signal.itemsize))
-    e = (window * numpy.power(s, 2)).sum(1) / windowSize
+    p = numpy.power(signal,2)
+    s = stride_tricks.as_strided(p,shape=(n,windowSize), strides=(signal.itemsize,signal.itemsize))
+    e = numpy.dot(s,window) / windowSize
+    e.shape = (e.shape[0],)
     return e
 
 def _test():
