@@ -21,6 +21,11 @@ def load(mp3File):
     rawData =  ffmpeg.stdout
 
     mp3Array = numpy.fromstring(rawData.read(),numpy.int16)
-        
+    mp3Array = mp3Array.astype('float')/32767.0        
     #print mp3Array.size
     return mp3Array
+
+def play(mp3Array):
+	import scikits.audiolab
+	scikits.audiolab.play(mp3Array)
+
