@@ -5,9 +5,11 @@ Prerequisites
 - Numpy
 - Scipy
 - FFmpeg executable
-
+- Audiolab is required for playback
+ 
 PyMIR is divided into two main sections:
 - pymir.audio - for analyzing digital audio content
+- pymir.transform for transforms of the audio file
 - pymir.music - for analysis of high level objects within music theoretic frameworks
 
 PyMIR.Audio
