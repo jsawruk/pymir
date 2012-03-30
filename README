@@ -10,7 +10,7 @@ Prerequisites
 PyMIR is divided into two main sections:
 - pymir.audio - for analyzing digital audio content
 - pymir.transform for transforms of the audio file
-- pymir.music - for analysis of high level objects within music theoretic frameworks
+- pymir.symbolic - for analysis of high level objects within music theoretic frameworks
 
 PyMIR.Audio
 -------------
@@ -37,7 +37,7 @@ PyMIR.Audio
 - Effects
 
 
-PyMIR.Music
+PyMIR.Symbolic
 -------------
 - Pitch Class sets
 
