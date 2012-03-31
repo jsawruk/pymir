@@ -2,8 +2,6 @@
 # Chord estimator from MP3 file
 import sys
 
-import matplotlib.pyplot as plt
-
 sys.path.append('..')
 from pymir.audio import chordestimator
 

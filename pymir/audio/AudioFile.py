@@ -5,6 +5,9 @@ from pymir.audio import mp3
 from pymir.audio import onset
 from pymir.audio import Frame
 
+import scipy.io.wavfile
+import numpy
+
 class AudioFile:
     
     data = []
@@ -17,7 +20,19 @@ class AudioFile:
         if len != -1:
             # Use only a portion of the audio
             self.data = self.data[:len]
+    
+    def readWav(self, filename, len=-1):
+        sample_rate, samples = scipy.io.wavfile.read(filename)
         
+        # Convert to mono
+        samples = numpy.mean(samples, 1)
+        
+        self.data = samples
+        
+        if len != -1:
+            # Use only a portion of the audio
+            self.data = self.data[:len]
+    
     def getOnsets(self):
         os = onset.onsets(self.data)
         
