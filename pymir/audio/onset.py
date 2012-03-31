@@ -1,27 +1,41 @@
-# Onset detector
+"""
+Onset detector
 
+This will detect the beginning of musically interesting things, like notes and such.
+"""
 import numpy
 import scipy
 
-from pymir.audio import energy
+#from pymir.audio import energy
 
-def onsets(signal):
-    
-    # Get energy
-    e = energy.energy(signal)
-    
-    # Compute dEnergy
-    windowSize = 256
-    window = numpy.hamming(windowSize)
-    
-    #diffe = numpy.diff(e)
-    
-    #de = scipy.zeros(len(diffe))
-    
-    #for i in (0, len(diffe) - windowSize):
-    #  de[i] = numpy.sum(window.conj().transpose() * diffe[i:i + windowSize]) / windowSize
-    #e = [x + 0.00001 for x in e]
-    e = e + 0.00001
-    diffloge = numpy.diff(numpy.log(e)) 
-          
-    return diffloge
+def onsets(signal,ws=2000,threshold=1.1,avg_coef=.999,min_dist=400):
+	""" Calculates where the onsets are, and returns an array of sample numbers of where the onsets are """	
+	os = list()
+	af = 0.0
+	sc = 0
+	lat = -2*min_dist
+	th = 0.005
+	m = 0+abs(signal[0])
+	for f in range(0,len(signal)):
+		m *= avg_coef 
+		m += (1.0-avg_coef)*abs(signal[f])
+		af = af + abs(signal[f])
+		sc = sc + 1
+		if sc > 2000:
+			af = af - abs(signal[f-ws])
+			sc = sc - 1
+			if (af > threshold*m*ws):
+				if f - lat > min_dist:
+					for f2 in range(0,ws):
+						if abs(signal[f-ws+f2])>threshold*m:
+							os.append(f-ws+f2)
+							break
+				lat = f
+	return(os)	
+if __name__ == "__main__":
+	from scikits.audiolab import Sndfile
+	f = Sndfile("../../audio_files/beatbox1/callout_mouss.wav",'r')
+	buf = f.read_frames(f.nframes, dtype=numpy.float64)
+	os = onsets(buf)	
+	for o in os:
+		print str(float(o)/f.samplerate) 
