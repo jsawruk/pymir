@@ -1,0 +1,80 @@
+
+   Beatboxing data set "beatboxset1"
+   Collected 2008 by Dan Stowell, Queen Mary University of London
+
+-------ABOUT-------
+
+This dataset contains beatboxing (vocal percussion) recordings from various 
+contributors, who recorded the clips themselves in various conditions. The clips
+were provided by users of the website http://www.humanbeatbox.com/ and are 
+identified by the names they use on that forum. Each clip is from a different
+contributor.
+
+The accompanying spreadsheet file "beatboxset1.csv" provides metadata for the 
+recordings.
+
+Clips were sourced in two slightly different ways, identified by the "Source"
+field in the spreadsheet:
+
+  c - "callout" - contributors responded to a specific callout in which we 
+         asked for approx 30-second clips, specifically featuring 
+         the 3 most common beatbox sounds: kicks, snares, hats.
+         http://www.humanbeatbox.com/forum/showthread.php?t=48723
+         
+  o - "other" - recordings were published online for other purposes, and 
+         having checked that the recordings matched our criteria, we 
+         obtained permission to use them in our dataset.
+
+Only uncompressed WAV-format audio clips are included. There is some variation 
+in exact format (44100 or 22050 Hz, mono or stereo); we have not postprocessed
+the clips.
+
+-------ANNOTATIONS-------
+
+Annotations of the beatbox data were made in June-July 2009 by two independent
+annotators:
+ * Helena du Toit
+ * Diako Rasoul
+
+Individual event onset locations were annotated, along with a category label. 
+The labels' meanings are:
+
+ * k  = kick
+ * hc = hihat, closed
+ * ho = hihat, open
+ * sb = snare, "bish" or "pss" -like
+ * sk = snare, "k" -like  (may sound like a "clap" or "rimshot" snare)
+ * s  = snare but not sure which of the above types (or isn't either of them)
+ * br = a breath sound (not intended to sound like percussion)
+ * m  = humming (or similar, a note with no drum-like or speech-like nature)
+ * v  = speech or singing
+ * x  = miscellaneous other sound (identifiable, but not fitting one of 
+                                    the other categories)
+ * ?  = unsure of classification
+
+Files were annotated using Sonic Visualiser 1.5 <http://sonicvisualiser.org>,
+via a combination of listening and inspecting waveforms/spectrograms. Each 
+person's annotations are provided in a subfolder indicated by their initials.
+Each annotation file is a CSV file with two columns: time offset in seconds
+and classification.
+
+-------COPYRIGHTS-------
+
+Audio files:
+
+(c) 2008 the respective contributors
+
+The creators retain their copyrights in the sound files they recorded.
+They have all agreed to the publishing of their sound file under the 
+Creative Commons "Attribution-ShareAlike 3.0" license:
+
+  http://creativecommons.org/licenses/by-sa/3.0/
+
+Metadata:
+
+The metadata created to describe the audio files is
+(c) 2008-2009 Dan Stowell and Queen Mary University of London
+
+Published under the same license as the audio files.
+
+  http://creativecommons.org/licenses/by-sa/3.0/
