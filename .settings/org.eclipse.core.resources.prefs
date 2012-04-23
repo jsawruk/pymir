@@ -1,3 +1,5 @@
-#Sat Apr 21 22:18:39 EDT 2012
+#Mon Apr 23 18:01:28 EDT 2012
 eclipse.preferences.version=1
+encoding//pymir/audio/cqt.py=utf-8
+encoding//pymir/audio/dct.py=utf-8
 encoding//pymir/audio/mir.py=utf-8

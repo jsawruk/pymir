@@ -2,10 +2,15 @@
 # ndarray subclass for time-series data
 
 import math
+from math import *
 
 import numpy
 import numpy.fft
 from numpy import *
+
+from numpy.lib import stride_tricks
+
+import scipy
 
 from pymir import Spectrum
 
@@ -57,6 +62,51 @@ class Frame(numpy.ndarray):
     #####################
     # Frame methods
     #####################
+    
+    # Constant Q Transform (CQT)
+    def cqt(self):
+        N = len(self)
+        y = array(zeros(N))
+        a = sqrt(2 / float(N))
+        for k in range(N):
+            for n in range(N):
+                y[k] += self[n] * cos(pi * (2*n + 1) * k / float(2 * N))
+            if k == 0:
+                y[k] = y[k] * sqrt(1 / float(N))
+            else:
+                y[k] = y[k] * a
+        return y
+    
+    # Discrete Cosine Transform (DCT)
+    def dct(self):
+        N = len(self)
+        y = array(zeros(N))
+        a = sqrt(2 / float(N))
+        for k in range(N):
+            for n in range(N):
+                y[k] += self[n] * cos(pi * (2*n + 1) * k / float(2 * N))
+            if k == 0:
+                y[k] = y[k] * sqrt(1/float(N))
+            else:
+                y[k] = y[k] * a
+        return y
+    
+    # Energy
+    def energy(self):
+        N = len(self)
+
+        windowSize = 256
+        window = numpy.hamming(windowSize)
+        window.shape = (256,1)
+        
+        n = N - windowSize #number of windowed samples.
+    
+        # Create a view of signal who's shape is (n, windowSize). Use stride_tricks such that each stide jumps only one item.
+        p = numpy.power(signal,2)
+        s = stride_tricks.as_strided(p,shape=(n,windowSize), strides=(signal.itemsize,signal.itemsize))
+        e = numpy.dot(s,window) / windowSize
+        e.shape = (e.shape[0],)
+        return e
     
     # Root-mean-squared amplitude
     def rms(self):
