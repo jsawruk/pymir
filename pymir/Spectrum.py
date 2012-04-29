@@ -61,6 +61,23 @@ class Spectrum(numpy.ndarray):
     # Bandwidth
     
     # Centroid
+    def centroid(self):
+        binNumber = 0
+        
+        numerator = 0
+        denominator = 0
+        
+        for bin in self:
+            # Compute center frequency
+            f = (self.sampleRate / 2.0) / len(self) 
+            f = f * binNumber
+            
+            numerator = numerator + (f * abs(bin))
+            denominator = denominator + abs(bin)
+            
+            binNumber = binNumber + 1
+            
+        return (numerator * 1.0) / denominator
     
     # Cepstrum?
     
@@ -90,8 +107,6 @@ class Spectrum(numpy.ndarray):
     # Crest
     
     # Flatness
-    
-    # Flux
     
     # Kurtosis
     

@@ -103,10 +103,24 @@ class Frame(numpy.ndarray):
     
         # Create a view of signal who's shape is (n, windowSize). Use stride_tricks such that each stide jumps only one item.
         p = numpy.power(signal,2)
-        s = stride_tricks.as_strided(p,shape=(n,windowSize), strides=(signal.itemsize,signal.itemsize))
+        s = stride_tricks.as_strided(p,shape=(n,windowSize), strides=(self.itemsize,self.itemsize))
         e = numpy.dot(s,window) / windowSize
         e.shape = (e.shape[0],)
         return e
+    
+    # Decompose this frame into smaller frames of the given size
+    def frames(self, frameSize):
+        frames = []
+        start = 0
+        end = frameSize
+        while start < len(self):
+            
+            frames.append(self[start:end])
+            
+            start = start + frameSize
+            end = end + frameSize
+            
+        return frames
     
     # Root-mean-squared amplitude
     def rms(self):
@@ -120,7 +134,7 @@ class Frame(numpy.ndarray):
     
     # Spectrum
     def spectrum(self):
-        fftdata = numpy.fft.rfft(self)
+        fftdata = numpy.fft.rfft(self) # rfft only returns the real half of the FFT values, which is all we need
         spectrum = fftdata.view(Spectrum.Spectrum)
         spectrum.sampleRate = self.sampleRate
         

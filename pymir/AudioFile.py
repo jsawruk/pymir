@@ -22,6 +22,8 @@ class AudioFile(Frame.Frame):
         obj = numpy.ndarray.__new__(subtype, shape, dtype, buffer, offset, strides,
                          order)
         
+        obj.sampleRate = 0
+        
         # Finally, we must return the newly created object:
         return obj
     
@@ -49,6 +51,8 @@ class AudioFile(Frame.Frame):
         # method sees all creation of default objects - with the
         # InfoArray.__new__ constructor, but also with
         # arr.view(InfoArray).
+        
+        self.sampleRate = getattr(obj, 'sampleRate', None)
         
         # We do not need to return anything
     
