@@ -2,3 +2,5 @@
 .pydevproject
 *.pyc
 *.swp
+.DS_Store
+.settings
