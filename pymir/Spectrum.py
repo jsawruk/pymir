@@ -1,6 +1,8 @@
-# Spectrum class
-# ndarray subclass for spectral data
-
+"""
+Spectrum class
+ndarray subclass for spectral data
+Last updated: 9 December 2012
+"""
 import math
 
 import numpy
@@ -8,6 +10,8 @@ from numpy import *
 
 from numpy import fft,array,arange,zeros,dot,transpose
 from math import sqrt,cos,pi
+
+import pymir
 
 class Spectrum(numpy.ndarray):
     
@@ -58,10 +62,10 @@ class Spectrum(numpy.ndarray):
     # Spectrum methods
     #####################
     
-    # Bandwidth
-    
-    # Centroid
     def centroid(self):
+        """
+        Compute the spectral centroid
+        """
         binNumber = 0
         
         numerator = 0
@@ -79,10 +83,10 @@ class Spectrum(numpy.ndarray):
             
         return (numerator * 1.0) / denominator
     
-    # Cepstrum?
-    
-    # Chroma
     def chroma(self):
+        """
+        Compute the 12-ET chroma vector from this spectrum
+        """
         chroma = [0] * 12
         for index in range(0, len(self)):
             
@@ -104,14 +108,10 @@ class Spectrum(numpy.ndarray):
         
         return chroma
     
-    # Crest
-    
-    # Flatness
-    
-    # Kurtosis
-    
-    # Inverse DCT (IDCT)
     def idct(self):
+        """
+        Compute the Inverse Discrete Cosine Transform (IDCT)
+        """
         N = len(self)
         x = array(zeros(N))
         a = sqrt(2 / float(N))
@@ -123,15 +123,25 @@ class Spectrum(numpy.ndarray):
                     x[n] += a * self[k] * cos(pi * (2*n + 1) * k / float(2 * N))
         return x
     
-    # Inverse FFT
-    
+    def ifft(self):
+        """
+        Compute the Inverse FFT
+        """
+        fftdata = numpy.fft.irfft(self)
+        frame = fftdata.view(pymir.Frame)
+        frame.sampleRate = self.sampleRate
+        
+        return frame
+
+    # TODO
+    # Bandwidth    
+    # Cepstrum?
+    # Crest
+    # Flatness
+    # Kurtosis
     # MFCCs?
-    
     # Rolloff
-    
     # Skewness
-    
     # Spread
-    
     # Tilt
     

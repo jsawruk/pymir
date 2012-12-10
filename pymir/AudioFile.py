@@ -1,6 +1,8 @@
-# AudioFile class
-# Load audio files (wav or mp3) into ndarray subclass
-
+"""
+AudioFile class
+Load audio files (wav or mp3) into ndarray subclass
+Last updated: 9 December 2012
+"""
 import os
 from subprocess import Popen, PIPE
 
@@ -56,11 +58,12 @@ class AudioFile(Frame.Frame):
         
         # We do not need to return anything
     
-    
-    # Open a file (WAV or MP3), return instance of this class with data loaded in
-    # Note that this is a static method. This is the preferred method of constructing this object
     @staticmethod
     def open(filename, sampleRate=44100):
+        """
+        Open a file (WAV or MP3), return instance of this class with data loaded in
+        Note that this is a static method. This is the preferred method of constructing this object
+        """
         filename = filename.lower()
         
         if filename.endswith('mp3'):

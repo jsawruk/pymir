@@ -1,25 +1,39 @@
-# onset-test.py
-# Testing of spectral flux and flux-based onset detection methods
-
+"""
+Tests of different onset detection methods
+Currently under development
+Last updated: 9 December 2012
+"""
 import sys
 sys.path.append('..')
 
 from pymir import AudioFile
-from pymir import SpectralFlux
+from pymir.audio import energy
+from pymir.audio import onsets
 
 import matplotlib.pyplot as plt
 
-audiofile = AudioFile.open("../audio_files/test-stereo.mp3")
+filename = "../audio_files/drum_loop_01.wav"
 
-# Decompose the audio file into a set of frames of framesize
-frameSize = 1024
-frames = audiofile.frames(frameSize)
+print "Opening File: " + filename
+audiofile = AudioFile.open(filename)
 
-# Compute the spectra of each frame
-spectra = [f.spectrum() for f in frames]
+# Time-based methods
+print "Finding onsets using Energy function (temporal domain)"
+o = onsets.onsetsByEnergy(audiofile, threshold = 1e9)
+frames = audiofile.framesFromOnsets(o)
 
-# Compute the spectral flux
-flux = SpectralFlux.spectralFlux(spectra, rectify=True)
-print flux
-#plt.plot(flux)
-#plt.show()
+print o
+
+#for i in range(0, len(frames)):
+#	print "Frame " + str(i)
+#	plt.plot(frames[i])
+#	plt.show()
+
+# Spectral-based methods
+#print "Finding onsets using Spectral Flux (spectral domain)"
+#o = onsets.onsetsByFlux(audiofile)
+#frames = audiofile.framesFromOnsets(o)
+#for i in range(0, len(frames)):
+#	print "Frame " + str(i)
+#	plt.plot(frames[i])
+#	plt.show()

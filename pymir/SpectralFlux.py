@@ -1,10 +1,14 @@
-# SpectralFlux.py
-# Compute the spectral flux between consecutive spectra
-# This technique can be for onset detection
+"""
+SpectralFlux.py
+Compute the spectral flux between consecutive spectra
+This technique can be for onset detection
 
-# rectify - only return positive values
-
+rectify - only return positive values
+"""
 def spectralFlux(spectra, rectify=False):
+    """
+    Compute the spectral flux between consecutive spectra
+    """
     spectralFlux = []
     
     # Compute flux for zeroth spectrum

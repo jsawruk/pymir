@@ -1,5 +1,7 @@
-# Estimate the chord from the given chroma
-
+"""
+Estimate the chord from the given (normalized) chroma vector
+Last updated: 9 December 2012
+"""
 import math
 
 chords = [ {'name': "C", 'vector' :[1,0,0,0,1,0,0,1,0,0,0,0], 'key': 0, 'mode': 1 },
@@ -29,27 +31,29 @@ chords = [ {'name': "C", 'vector' :[1,0,0,0,1,0,0,1,0,0,0,0], 'key': 0, 'mode': 
           ]
 
 def cosineSimilarity(a, b):
-    dotProduct = 0
-    aMagnitude = 0
-    bMagnitude = 0
-    for i in range(len(a)):
-        dotProduct += (a[i] * b[i])
-        aMagnitude += math.pow(a[i], 2)
-        bMagnitude += math.pow(b[i], 2)
-        
-    aMagnitude = math.sqrt(aMagnitude)
-    bMagnitude = math.sqrt(bMagnitude)
-    
-    return dotProduct / (aMagnitude * bMagnitude)
+  dotProduct = 0
+  aMagnitude = 0
+  bMagnitude = 0
+  for i in range(len(a)):
+      dotProduct += (a[i] * b[i])
+      aMagnitude += math.pow(a[i], 2)
+      bMagnitude += math.pow(b[i], 2)
+      
+  aMagnitude = math.sqrt(aMagnitude)
+  bMagnitude = math.sqrt(bMagnitude)
+
+  return dotProduct / (aMagnitude * bMagnitude)
 
 def getChord(chroma):
-    #print chroma
-    maxScore = 0
-    chordName = ""
-    for chord in chords:
-        score = cosineSimilarity(chroma, chord['vector'])
-        if score > maxScore:
-            maxScore = score
-            chordName = chord['name']
-            
-    return chordName
+  """
+  Given a chroma vector, return the best chord match
+  """
+  maxScore = 0
+  chordName = ""
+  for chord in chords:
+      score = cosineSimilarity(chroma, chord['vector'])
+      if score > maxScore:
+          maxScore = score
+          chordName = chord['name']
+          
+  return chordName

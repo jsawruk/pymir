@@ -1,6 +1,8 @@
-# Frame class
-# ndarray subclass for time-series data
-
+"""
+Frame class
+ndarray subclass for time-series data
+Last updated: 9 December 2012
+"""
 import math
 from math import *
 
@@ -63,8 +65,10 @@ class Frame(numpy.ndarray):
     # Frame methods
     #####################
     
-    # Constant Q Transform (CQT)
     def cqt(self):
+        """
+        Compute the Constant Q Transform (CQT)
+        """
         N = len(self)
         y = array(zeros(N))
         a = sqrt(2 / float(N))
@@ -77,8 +81,10 @@ class Frame(numpy.ndarray):
                 y[k] = y[k] * a
         return y
     
-    # Discrete Cosine Transform (DCT)
     def dct(self):
+        """
+        Comput the Discrete Cosine Transform (DCT)
+        """
         N = len(self)
         y = array(zeros(N))
         a = sqrt(2 / float(N))
@@ -91,25 +97,28 @@ class Frame(numpy.ndarray):
                 y[k] = y[k] * a
         return y
     
-    # Energy
-    def energy(self):
+    def energy(self, windowSize = 256):
+        """
+        Compute the energy of this frame
+        """
         N = len(self)
 
-        windowSize = 256
         window = numpy.hamming(windowSize)
-        window.shape = (256,1)
+        window.shape = (windowSize, 1)
         
         n = N - windowSize #number of windowed samples.
     
         # Create a view of signal who's shape is (n, windowSize). Use stride_tricks such that each stide jumps only one item.
         p = numpy.power(signal,2)
-        s = stride_tricks.as_strided(p,shape=(n,windowSize), strides=(self.itemsize,self.itemsize))
+        s = stride_tricks.as_strided(p,shape=(n, windowSize), strides=(self.itemsize, self.itemsize))
         e = numpy.dot(s,window) / windowSize
-        e.shape = (e.shape[0],)
+        e.shape = (e.shape[0], )
         return e
     
-    # Decompose this frame into smaller frames of the given size
     def frames(self, frameSize):
+        """
+        Decompose this frame into smaller frames of size frameSize
+        """
         frames = []
         start = 0
         end = frameSize
@@ -122,8 +131,20 @@ class Frame(numpy.ndarray):
             
         return frames
     
-    # Root-mean-squared amplitude
+    def framesFromOnsets(self, onsets):
+        """
+        Decompose into frames based on onset start time-series
+        """
+        frames = []
+        for i in range(0, len(onsets) - 1):
+            frames.append(self[onsets[i] : onsets[i + 1]])
+
+        return frames
+
     def rms(self):
+        """
+        Compute the root-mean-squared amplitude
+        """
         sum = 0
         for i in range(0, len(self)):
             sum = sum + self[i] ** 2
@@ -134,14 +155,20 @@ class Frame(numpy.ndarray):
     
     # Spectrum
     def spectrum(self):
+        """
+        Compute the spectrum using an FFT
+        Returns an instance of Spectrum
+        """
         fftdata = numpy.fft.rfft(self) # rfft only returns the real half of the FFT values, which is all we need
         spectrum = fftdata.view(Spectrum.Spectrum)
         spectrum.sampleRate = self.sampleRate
         
         return spectrum
-    
-    # Zero-crossing rate (ZCR)
+
     def zcr(self):
+        """
+        Compute the Zero-crossing rate (ZCR)
+        """
         zcr = 0
         for i in range(1, len(self)):
             if (self[i - 1] * self[i]) < 0:
