@@ -19,21 +19,21 @@ audiofile = AudioFile.open(filename)
 
 # Time-based methods
 print "Finding onsets using Energy function (temporal domain)"
-o = onsets.onsetsByEnergy(audiofile, threshold = 1e9)
+o = onsets.onsetsByEnergy(audiofile)
+print o
 frames = audiofile.framesFromOnsets(o)
 
-print o
-
-#for i in range(0, len(frames)):
-#	print "Frame " + str(i)
-#	plt.plot(frames[i])
-#	plt.show()
+for i in range(0, len(frames)):
+	print "Frame " + str(i)
+	plt.plot(frames[i])
+	plt.show()
 
 # Spectral-based methods
-#print "Finding onsets using Spectral Flux (spectral domain)"
-#o = onsets.onsetsByFlux(audiofile)
-#frames = audiofile.framesFromOnsets(o)
-#for i in range(0, len(frames)):
-#	print "Frame " + str(i)
-#	plt.plot(frames[i])
-#	plt.show()
+print "Finding onsets using Spectral Flux (spectral domain)"
+o = onsets.onsetsByFlux(audiofile)
+print o
+frames = audiofile.framesFromOnsets(o)
+for i in range(0, len(frames)):
+	print "Frame " + str(i)
+	plt.plot(frames[i])
+	plt.show()

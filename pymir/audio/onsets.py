@@ -31,7 +31,7 @@ def onsetsByEnergy(audioData, frameSize = 512, threshold = 1):
 	"""
 	e = energy.energy(audioData, frameSize)
 	dE = energy.dEnergy(audioData, frameSize)
-	peaks = peakPicking(dE, frameSize, threshold)
+	peaks = peakPicking(dE, 2048, threshold)
 
 	return peaks
 
@@ -48,15 +48,20 @@ def onsetsByFlux(audioData, frameSize = 1024):
 	flux = SpectralFlux.spectralFlux(spectra, rectify=True)
 
 	peaks = peakPicking(flux, windowSize = 10, threshold = 1e6)
+	peaks = [frameSize * p for p in peaks]
 
 	return peaks
 
 def peakPicking(onsets, windowSize = 1024, threshold = 1):
 
-	# Compute a windowed (moving) average
-	movingAverage = windowedAverage(onsets, windowSize)
+	peaks = []
+	
+	peaks = peaksAboveAverage(onsets, windowSize)
 
-	peaks = peakdet(movingAverage, 1, threshold = threshold)
+	# Compute a windowed (moving) average
+	#movingAverage = windowedAverage(onsets, windowSize)
+
+	#peaks = peakdet(movingAverage, 1, threshold = threshold)
 
 	#for i in range(0, len(movingAverage) - 1):
 	#	if movingAverage[i] > movingAverage[i + 1]:
@@ -64,6 +69,39 @@ def peakPicking(onsets, windowSize = 1024, threshold = 1):
 	#	else:
 	#		peaks.append(0)
 	return peaks
+
+def peaksAboveAverage(data, windowSize):
+	"""
+	Find peaks by the following method:
+	- Compute the average of all the data
+	- Using a non-sliding window, find the max within each window
+	- If the windowed max is above the average, add it to peaks
+	"""
+
+	data = numpy.array(data)
+
+	peaks = []
+
+	dataAverage = numpy.average(data)
+	dataAverage = dataAverage * 10
+
+	slideAmount = windowSize / 2
+
+	start = 0
+	end = windowSize
+	while start < len(data): 
+		windowMax = data[start:end].max()  
+		windowMaxPos = data[start:end].argmax()
+
+		if windowMax > dataAverage:
+			if (start + windowMaxPos) not in peaks:
+				peaks.append(start + windowMaxPos)
+
+		start = start + slideAmount
+		end = end + slideAmount
+	
+	return peaks
+
 
 def windowedAverage(data, windowSize):
 	window = numpy.repeat(1.0, windowSize) / windowSize
