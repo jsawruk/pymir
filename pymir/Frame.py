@@ -73,7 +73,7 @@ class Frame(numpy.ndarray):
         """
         Compute the Constant Q Transform (CQT)
         """
-       return Transforms.cqt(self)
+        return Transforms.cqt(self)
     
     def dct(self):
         """
