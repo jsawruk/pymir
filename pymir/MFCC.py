@@ -11,6 +11,47 @@ import math
 import numpy
 from numpy import *
 
+import scipy
+from scipy.fftpack import *
+
+def mfcc2(spectrum):
+	"""
+	Alternative (and vectorized) MFCC computation from Steve Tjoa
+	"""
+	fb = filterbank(spectrum, spectrum.sampleRate)
+	coeff = scipy.fftpack.dct(scipy.log(fb), type = 2, norm = 'ortho')
+	return coeff
+
+def filterbank(x, fs):
+	n = len(x)
+	m = 2 ** (1.0 / 6)
+	f2 = 110.0
+	f1 = f2 / m
+	f3 = f2 * m
+	fb = scipy.array(scipy.zeros(32))
+	for i in range(32):
+		fb[i] = numpy.absolute(fbwin(x, fs, f1, f2, f3))
+		f1 = f2
+		f2 = f3
+ 		f3 = f3 * m
+	
+	return fb
+
+def fbwin(x, fs, f1, f2, f3):
+	n = len(x)
+	b1 = int(n * f1 / fs)
+	b2 = int(n * f2 / fs)
+	b3 = int(n * f3 / fs)
+	y = x[b2]
+	
+	for b in range(b1, b2):
+		y = y + x[b] * (b - b1) / (b2 - b1)
+	
+	for b in range(b2 + 1, b3):
+		y = y + x[b] * (1 - (b - b2) / (b3 - b2))
+	
+	return y
+
 def mfcc(spectrum, m, NumFilters = 48):
     """
     Compute the Mth Mel-Frequency Cepstral Coefficient

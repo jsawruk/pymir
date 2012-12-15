@@ -126,6 +126,9 @@ class Spectrum(numpy.ndarray):
         """
         return MFCC.mfcc(self, m, NumFilters)
 
+    def mfcc2(self):
+        return MFCC.mfcc2(self)
+
     # TODO
     # Bandwidth    
     # Cepstrum?
