@@ -7,8 +7,8 @@ import sys
 sys.path.append('..')
 
 from pymir import AudioFile
-from pymir.audio import energy
-from pymir.audio import onsets
+from pymir import Energy
+from pymir import Onsets
 
 import matplotlib.pyplot as plt
 
@@ -22,7 +22,7 @@ plt.show()
 
 # Time-based methods
 print "Finding onsets using Energy function (temporal domain)"
-o = onsets.onsetsByEnergy(audiofile)
+o = Onsets.onsetsByEnergy(audiofile)
 print o
 frames = audiofile.framesFromOnsets(o)
 
@@ -33,7 +33,7 @@ for i in range(0, len(frames)):
 
 # Spectral-based methods
 print "Finding onsets using Spectral Flux (spectral domain)"
-o = onsets.onsetsByFlux(audiofile)
+o = Onsets.onsetsByFlux(audiofile)
 print o
 frames = audiofile.framesFromOnsets(o)
 for i in range(0, len(frames)):

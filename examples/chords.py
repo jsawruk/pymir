@@ -10,7 +10,7 @@ sys.path.append('..')
 
 from pymir import AudioFile
 from pymir.audio import chordestimator
-from pymir.audio import onsets
+from pymir import Onsets
 
 import matplotlib.pyplot as plt
 
@@ -25,7 +25,7 @@ plt.show()
 #audiofile = audiofile[:100000]
 
 print "Finding onsets using Spectral Flux (spectral domain)"
-o = onsets.onsetsByFlux(audiofile)
+o = Onsets.onsetsByFlux(audiofile)
 print o
 
 print "Extracting Frames"

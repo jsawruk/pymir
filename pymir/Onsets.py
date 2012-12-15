@@ -5,9 +5,9 @@ Supported methods:
 - Time-domain: energy
 - Spectral: flux
 
-Last updated: 9 December 2012
+Last updated: 15 December 2012
 """
-from pymir.audio import energy
+from pymir import Energy
 from pymir import SpectralFlux
 
 import numpy
@@ -29,8 +29,8 @@ def onsetsByEnergy(audioData, frameSize = 512, threshold = 1):
 	"""
 	Compute onsets by using dEnergy (time-domain)
 	"""
-	e = energy.energy(audioData, frameSize)
-	dE = energy.dEnergy(audioData, frameSize)
+	e = Energy.energy(audioData, frameSize)
+	dE = Energy.dEnergy(audioData, frameSize)
 	peaks = peakPicking(dE, 2048, threshold)
 
 	return peaks

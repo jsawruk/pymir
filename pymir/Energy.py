@@ -1,7 +1,7 @@
 """ 
 energy.py
 Compute energy and related quantities
-Last updated: 9 December 2012
+Last updated: 15 December 2012
 """
 
 import numpy
