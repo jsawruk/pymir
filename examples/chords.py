@@ -9,7 +9,7 @@ import sys
 sys.path.append('..')
 
 from pymir import AudioFile
-from pymir.audio import chordestimator
+from pymir import Pitch
 from pymir import Onsets
 
 import matplotlib.pyplot as plt
@@ -38,22 +38,22 @@ frames = audiofile.framesFromOnsets(o)
 #frameSize = 16384
 #frames = audioFile.frames(frameSize)
 
-print "Start | End  | Chord"
-print "--------------------"
+print "Start | End  | Chord | (% match)"
+print "-------------------------------"
 
 frameIndex = 0
 startIndex = 0
 for frame in frames:
-    spectrum = frame.spectrum()
-    chroma = spectrum.chroma()
-    chord = chordestimator.getChord(chroma)
+	spectrum = frame.spectrum()
+	chroma = spectrum.chroma()
+	chord, score = Pitch.getChord(chroma)
 
-    endIndex = startIndex + len(frame)
+	endIndex = startIndex + len(frame)
 
-    startTime = startIndex / frame.sampleRate
-    endTime = endIndex / frame.sampleRate
+	startTime = startIndex / frame.sampleRate
+	endTime = endIndex / frame.sampleRate
 
-    print "%.2f  | %.2f | %s" % (startTime, endTime, chord)
+	print "%.2f  | %.2f | %-4s | (%.2f)" % (startTime, endTime, chord, score)
     
-    frameIndex = frameIndex + 1
-    startIndex = startIndex + len(frame)
+	frameIndex = frameIndex + 1
+	startIndex = startIndex + len(frame)

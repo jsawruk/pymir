@@ -11,7 +11,7 @@ import numpy
 from numpy import *
 
 import pymir
-from pymir import MFCC, Transforms
+from pymir import MFCC, Pitch, Transforms
 
 class Spectrum(numpy.ndarray):
     
@@ -84,6 +84,7 @@ class Spectrum(numpy.ndarray):
         return (numerator * 1.0) / denominator
     
     def chroma(self):
+        return Pitch.chroma(self)
         """
         Compute the 12-ET chroma vector from this spectrum
         """
