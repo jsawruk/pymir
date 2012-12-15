@@ -1,7 +1,7 @@
 """
 Frame class
 ndarray subclass for time-series data
-Last updated: 9 December 2012
+Last updated: 15 December 2012
 """
 import math
 from math import *

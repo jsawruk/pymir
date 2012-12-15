@@ -1,7 +1,7 @@
 """
 AudioFile class
 Load audio files (wav or mp3) into ndarray subclass
-Last updated: 9 December 2012
+Last updated: 15 December 2012
 """
 import os
 from subprocess import Popen, PIPE

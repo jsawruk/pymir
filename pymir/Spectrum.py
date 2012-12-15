@@ -10,10 +10,8 @@ import math
 import numpy
 from numpy import *
 
-from numpy import fft,array,arange,zeros,dot,transpose
-from math import sqrt,cos,pi
-
 import pymir
+from pymir import MFCC
 
 class Spectrum(numpy.ndarray):
     
@@ -139,108 +137,7 @@ class Spectrum(numpy.ndarray):
         """
         Compute the Mth Mel-Frequency Cepstral Coefficient
         """
-        result = 0
-        outerSum = 0
-        innerSum = 0
-
-        binSize = len(self)
-
-        if m >= NumFilters:
-            return 0    # This represents an error condition - the specified coefficient is greater than or equal to the number of filters. The behavior in this case is undefined.
-
-        result = self.mfccNormalizationFactor(NumFilters, m)
-
-        for filterBand in range(1, NumFilters + 1):
-            # Compute inner sum
-            innerSum = 0
-            for frequencyBand in range(0, binSize - 1):
-                innerSum = innerSum + abs(self[frequencyBand] * self.mfccFilterParameter(binSize, frequencyBand, filterBand))
-
-            if innerSum > 0:
-                innerSum = log(innerSum) # The log of 0 is undefined, so don't use it
-
-            innerSum = innerSum * math.cos(((m * math.pi) / NumFilters) * (filterBand - 0.5))
-            
-            outerSum = outerSum + innerSum
-
-        result = result * outerSum
-
-        return result
-
-    def mfccNormalizationFactor(self, NumFilters, m):
-        """
-        Intermediate computation used by mfcc function. 
-        Computes a normalization factor
-        """
-        normalizationFactor = 0
-
-        if m == 0:
-            normalizationFactor = math.sqrt(1.0 / NumFilters)
-        else:
-            normalizationFactor = math.sqrt(2.0 / NumFilters)
-
-        return normalizationFactor
-
-    def mfccFilterParameter(self, binSize, frequencyBand, filterBand):
-        """
-        Intermediate computation used by the mfcc function. 
-        Compute the filter parameter for the specified frequency and filter bands
-        """
-        filterParameter = 0
-        boundary = (frequencyBand * self.samplingRate) / float(binSize)     # k * Fs / N
-        prevCenterFrequency = self.mfccGetCenterFrequency(filterBand - 1)   # fc(l - 1)
-        thisCenterFrequency = self.mfccGetCenterFrequency(filterBand)       # fc(l)
-        nextCenterFrequency = self.mfccGetCenterFrequency(filterBand + 1)   # fc(l + 1)
-
-        if boundary >= 0 and boundary < prevCenterFrequency:
-            filterParameter = 0
-        
-        elif boundary >= prevCenterFrequency and boundary < thisCenterFrequency:
-            filterParameter = (boundary - prevCenterFrequency) / (thisCenterFrequency - prevCenterFrequency)
-            filterParameter = filterParameter * self.mfccGetMagnitudeFactor(filterBand)
-        
-        elif boundary >= thisCenterFrequency and boundary < nextCenterFrequency:
-                filterParameter = (boundary - nextCenterFrequency) / (thisCenterFrequency - nextCenterFrequency)
-                filterParameter = filterParameter * self.mfccGetMagnitudeFactor(filterBand)
-        
-        elif boundary >= nextCenterFrequency and boundary < samplingRate:
-                filterParameter = 0
-
-        return filterParameter
-
-    def mfccGetMagnitudeFactor(self, filterBand):
-        """
-        Intermediate computation used by the mfcc function. 
-        Compute the band-dependent magnitude factor for the given filter band
-        """
-        magnitudeFactor = 0
-        
-        if filterBand >= 1 and filterBand <= 14:
-            magnitudeFactor = 0.015
-        elif filterBand >= 15 and filterBand <= 48:
-            magnitudeFactor = 2.0 / (self.mfccGetCenterFrequency(filterBand + 1) - self.mfccGetCenterFrequency(filterBand - 1))
-
-        return magnitudeFactor
-
-    def mfccGetCenterFrequency(self, filterBand):
-        """
-        Intermediate computation used by the mfcc function. 
-        Compute the center frequency (fc) of the specified filter band (l)
-        This where the mel-frequency scaling occurs. Filters are specified so that their
-        center frequencies are equally spaced on the mel scale
-        """
-        centerFrequency = 0
-
-        if filterBand == 0:
-            centerFrequency = 0;
-        elif filterBand >= 1 and filterBand <= 14:
-            centerFrequency = (200.0 * filterBand) / 3.0
-        else:
-            exponent = filterBand - 14
-            centerFrequency = math.pow(1.0711703, exponent)
-            centerFrequency = centerFrequency * 1073.4
-        
-        return centerFrequency
+        return MFCC.mfcc(self, m, NumFilters)
 
     # TODO
     # Bandwidth    
