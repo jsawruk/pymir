@@ -9,12 +9,12 @@ from math import *
 import numpy
 import numpy.fft
 from numpy import *
-
 from numpy.lib import stride_tricks
 
 import scipy
 
 from pymir import Spectrum
+import pyaudio
 
 class Frame(numpy.ndarray):
     
@@ -28,6 +28,8 @@ class Frame(numpy.ndarray):
                          order)
         
         obj.sampleRate = 0
+        obj.channels = 1
+        obj.format = pyaudio.paFloat32
         
         # Finally, we must return the newly created object:
         return obj
@@ -58,6 +60,8 @@ class Frame(numpy.ndarray):
         # arr.view(InfoArray).
         
         self.sampleRate = getattr(obj, 'sampleRate', None)
+        self.channels = getattr(obj, 'channels', None)
+        self.format = getattr(obj, 'format', None)
         
         # We do not need to return anything
         
@@ -140,6 +144,24 @@ class Frame(numpy.ndarray):
             frames.append(self[onsets[i] : onsets[i + 1]])
 
         return frames
+
+    def play(self):
+        """
+        Play this frame through the default playback device using pyaudio (PortAudio)
+        Note: This is a blocking operation.
+        """
+        # Create the stream
+        p = pyaudio.PyAudio()
+        stream = p.open(format = self.format, channels = self.channels, rate = self.sampleRate, output = True)
+
+        # Write the audio data to the stream
+        audioData = self.tostring()
+        stream.write(audioData)
+
+        # Close the stream
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
 
     def rms(self):
         """

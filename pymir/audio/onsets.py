@@ -83,13 +83,15 @@ def peaksAboveAverage(data, windowSize):
 	peaks = []
 
 	dataAverage = numpy.average(data)
-	dataAverage = dataAverage * 10
+	dataAverage = dataAverage * 1
 
 	slideAmount = windowSize / 2
 
 	start = 0
 	end = windowSize
 	while start < len(data): 
+		#print "Start: " + str(start)
+		#print "End:   " + str(end)
 		windowMax = data[start:end].max()  
 		windowMaxPos = data[start:end].argmax()
 

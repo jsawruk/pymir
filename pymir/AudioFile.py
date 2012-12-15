@@ -12,6 +12,7 @@ from numpy import *
 import scipy.io.wavfile
 
 from pymir import Frame
+import pyaudio
 
 class AudioFile(Frame.Frame):
     
@@ -25,6 +26,8 @@ class AudioFile(Frame.Frame):
                          order)
         
         obj.sampleRate = 0
+        obj.channels = 1
+        obj.format = pyaudio.paFloat32
         
         # Finally, we must return the newly created object:
         return obj
@@ -55,6 +58,8 @@ class AudioFile(Frame.Frame):
         # arr.view(InfoArray).
         
         self.sampleRate = getattr(obj, 'sampleRate', None)
+        self.channels = getattr(obj, 'channels', None)
+        self.format = getattr(obj, 'format', None)
         
         # We do not need to return anything
     
@@ -78,21 +83,28 @@ class AudioFile(Frame.Frame):
 
             rawData =  ffmpeg.stdout
 
-            mp3Array = numpy.fromstring(rawData.read(),numpy.int16)
-            mp3Array = mp3Array.astype('float') / 32767.0
+            mp3Array = numpy.fromstring(rawData.read(), numpy.int16)
+            mp3Array = mp3Array.astype('float32') / 32767.0
             audioFile = mp3Array.view(AudioFile)
         
             audioFile.sampleRate = sampleRate
+            audioFile.channels = 1
+            audioFile.format = pyaudio.paFloat32
             
             return audioFile
         
         elif filename.endswith('wav'):
             sampleRate, samples = scipy.io.wavfile.read(filename)
-        
-            # Convert to mono
-            samples = numpy.mean(samples, 1)
-            
-            audioFile =  samples.view(AudioFile)
+
+            # Convert to float
+            samples = samples.astype('float32') / 32767.0
+
+            # Get left channel
+            samples = samples[:, 0]
+
+            audioFile = samples.view(AudioFile)
             audioFile.sampleRate = sampleRate
+            audioFile.channels = 1
+            audioFile.format = pyaudio.paFloat32
             
             return audioFile

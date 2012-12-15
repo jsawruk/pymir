@@ -17,6 +17,9 @@ filename = "../audio_files/drum_loop_01.wav"
 print "Opening File: " + filename
 audiofile = AudioFile.open(filename)
 
+plt.plot(audiofile)
+plt.show()
+
 # Time-based methods
 print "Finding onsets using Energy function (temporal domain)"
 o = onsets.onsetsByEnergy(audiofile)
@@ -37,3 +40,4 @@ for i in range(0, len(frames)):
 	print "Frame " + str(i)
 	plt.plot(frames[i])
 	plt.show()
+	frames[i].play()

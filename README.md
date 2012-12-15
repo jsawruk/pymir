@@ -2,10 +2,10 @@
 PyMIR is a Python library for common tasks in Music Information Retrieval (MIR)
 
 ## Prerequisites
-* Numpy
-* Scipy
-* FFmpeg executable
-* Audiolab is required for playback
+* [Numpy](http://www.scipy.org/)
+* [Scipy](http://www.scipy.org/)
+* [FFmpeg executable](http://ffmpeg.org/)
+* [PyAudio](http://people.csail.mit.edu/hubert/pyaudio/) (for playback)
 
 ## Features
 * Read WAV files (using scipy) and MP3 files (using FFmpeg)
@@ -23,6 +23,7 @@ PyMIR is a Python library for common tasks in Music Information Retrieval (MIR)
     * Inverse Discrete Cosine Transform
     * Inverse FFT
 * Other features
+    * Audio playback via PyAudio
     * Naive chord estimation
     * Onset detectors (energy, flux)
     * Spectral Flux
@@ -72,6 +73,13 @@ The standard workflow for working with PyMIR is:
 
 	# Compute the spectral flux
 	flux = SpectralFlux.spectralFlux(spectra, rectify = True)
+
+### Audio playback
+
+Playback is provided on all AudioFile and Frame objects. Internal representation is 32-bit floating point.
+
+    wavData.play()
+    fixedFrames[0].play()
 
 ### Naive chord estimation
 
