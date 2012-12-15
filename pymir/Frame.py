@@ -13,7 +13,7 @@ from numpy.lib import stride_tricks
 
 import scipy
 
-from pymir import Spectrum
+from pymir import Spectrum, Transforms
 import pyaudio
 
 class Frame(numpy.ndarray):
@@ -73,33 +73,13 @@ class Frame(numpy.ndarray):
         """
         Compute the Constant Q Transform (CQT)
         """
-        N = len(self)
-        y = array(zeros(N))
-        a = sqrt(2 / float(N))
-        for k in range(N):
-            for n in range(N):
-                y[k] += self[n] * cos(pi * (2*n + 1) * k / float(2 * N))
-            if k == 0:
-                y[k] = y[k] * sqrt(1 / float(N))
-            else:
-                y[k] = y[k] * a
-        return y
+       return Transforms.cqt(self)
     
     def dct(self):
         """
-        Comput the Discrete Cosine Transform (DCT)
+        Compute the Discrete Cosine Transform (DCT)
         """
-        N = len(self)
-        y = array(zeros(N))
-        a = sqrt(2 / float(N))
-        for k in range(N):
-            for n in range(N):
-                y[k] += self[n] * cos(pi * (2*n + 1) * k / float(2 * N))
-            if k == 0:
-                y[k] = y[k] * sqrt(1/float(N))
-            else:
-                y[k] = y[k] * a
-        return y
+        return Transforms.dct(self)
     
     def energy(self, windowSize = 256):
         """
@@ -181,11 +161,7 @@ class Frame(numpy.ndarray):
         Compute the spectrum using an FFT
         Returns an instance of Spectrum
         """
-        fftdata = numpy.fft.rfft(self) # rfft only returns the real half of the FFT values, which is all we need
-        spectrum = fftdata.view(Spectrum.Spectrum)
-        spectrum.sampleRate = self.sampleRate
-        
-        return spectrum
+        return Transforms.fft(self)
 
     def zcr(self):
         """

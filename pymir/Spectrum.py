@@ -11,7 +11,7 @@ import numpy
 from numpy import *
 
 import pymir
-from pymir import MFCC
+from pymir import MFCC, Transforms
 
 class Spectrum(numpy.ndarray):
     
@@ -112,26 +112,13 @@ class Spectrum(numpy.ndarray):
         """
         Compute the Inverse Discrete Cosine Transform (IDCT)
         """
-        N = len(self)
-        x = array(zeros(N))
-        a = sqrt(2 / float(N))
-        for n in range(N):
-            for k in range(N):
-                if k == 0:
-                    x[n] += sqrt(1 / float(N)) * self[k] * cos(pi * (2*n + 1) * k / float(2 * N))
-                else:
-                    x[n] += a * self[k] * cos(pi * (2*n + 1) * k / float(2 * N))
-        return x
+        return Transforms.idct(self)
     
     def ifft(self):
         """
         Compute the Inverse FFT
         """
-        fftdata = numpy.fft.irfft(self)
-        frame = fftdata.view(pymir.Frame)
-        frame.sampleRate = self.sampleRate
-        
-        return frame
+        return Transforms.ifft(self)
 
     def mfcc(self, m, NumFilters = 48):
         """
@@ -145,7 +132,6 @@ class Spectrum(numpy.ndarray):
     # Crest
     # Flatness
     # Kurtosis
-    # MFCCs?
     # Rolloff
     # Skewness
     # Spread
