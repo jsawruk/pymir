@@ -29,6 +29,7 @@ PyMIR is a Python library for common tasks in Music Information Retrieval (MIR)
 * Other features
     * Audio playback via PyAudio
     * Naive chord estimation
+    * Naive pitch estimation
     * Onset detectors (energy, flux)
     * Spectral Flux
 

@@ -185,9 +185,5 @@ class Spectrum(numpy.ndarray):
         return numpy.var(abs(self))
 
     # TODO
-    # Bandwidth    
-    # Cepstrum?
     # Crest
     # Rolloff
-    # Tilt
-    

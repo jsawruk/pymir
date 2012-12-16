@@ -7,6 +7,8 @@ from __future__ import division
 
 import math
 
+import numpy
+
 # Dictionary of major and minor chords
 chords = [ {'name': "C", 'vector' :[1,0,0,0,1,0,0,1,0,0,0,0], 'key': 0, 'mode': 1 },
 			{'name': "Cm", 'vector':[1,0,0,1,0,0,0,1,0,0,0,0], 'key': 0, 'mode': 0 },
@@ -45,7 +47,7 @@ def chroma(spectrum):
 
 		# Convert frequency to pitch to pitch class
 		if f != 0:
-			pitch = int(round(69 + 12 * math.log(f / 440.0, 2)))
+			pitch = frequencyToMidi(f)
 		else:
 			pitch = 0
 		pitchClass = pitch % 12
@@ -75,6 +77,12 @@ def cosineSimilarity(a, b):
 
 	return dotProduct / (aMagnitude * bMagnitude)
 
+def frequencyToMidi(frequency):
+	"""
+	Convert a given frequency in Hertz to its corresponding MIDI pitch number (60 = Middle C)
+	"""
+	return int(round(69 + 12 * math.log(frequency / 440.0, 2)))
+
 def getChord(chroma):
 	"""
 	Given a chroma vector, return the best chord match using naive dictionary-based method
@@ -88,3 +96,13 @@ def getChord(chroma):
 			chordName = chord['name']
 
 	return chordName, maxScore
+
+def naivePitch(spectrum):
+	"""
+	Compute the pitch by using the naive pitch estimation method, i.e. get the pitch name for the most
+	prominent frequency.
+	Only returns MIDI pitch number
+	"""
+	maxFrequencyIndex = numpy.argmax(spectrum)
+	maxFrequency = maxFrequencyIndex * (spectrum.sampleRate / 2.0) / len(spectrum)
+	return frequencyToMidi(maxFrequency)
