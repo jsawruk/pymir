@@ -23,6 +23,8 @@ PyMIR is a Python library for common tasks in Music Information Retrieval (MIR)
     * Spectral Flatness
     * Spectral Moments (mean, variance, skewness, kurtosis)
     * Spectral Spread
+    * Spectral Rolloff
+    * Spectral Crest Factor
     * Chroma
     * Inverse Discrete Cosine Transform
     * Inverse FFT
@@ -76,6 +78,7 @@ The standard workflow for working with PyMIR is:
 	spectra = [f.spectrum() for f in fixedFrames]
     spectra[0].centroid() 						# Spectral Centroid
     spectra[0].chroma()							# Chroma vector
+    spectra[0].crest()                          # Spectral Crest Factor
     spectra[0].flatness()                       # Spectral Flatness
     spectra[0].idct()							# Inverse DCT
     spectra[0].ifft()							# Inverse FFT
@@ -83,6 +86,7 @@ The standard workflow for working with PyMIR is:
     spectra[0].mean()                           # Spectral Mean
     spectra[0].mfcc2()                          # MFCC (vectorized implementation)
     spectra[0].plot()                           # Plot using matplotlib
+    spectra[0].rolloff()                        # Spectral Rolloff
     spectra[0].skewness()                       # Spectral Skewness
     spectra[0].spread()                         # Spectral Spread
     spectra[0].variance()                       # Spectral Variance

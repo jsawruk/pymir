@@ -96,6 +96,19 @@ class Spectrum(numpy.ndarray):
         """
         return Pitch.chroma(self)
 
+    def crest(self):
+        """
+        Compute the spectral crest factor, i.e. the ratio of the maximum of the spectrum to the 
+        sum of the spectrum
+        """
+        absSpectrum = abs(self)
+        spectralSum = numpy.sum(absSpectrum)
+
+        maxFrequencyIndex = numpy.argmax(absSpectrum)
+        maxSpectrum = absSpectrum[maxFrequencyIndex]
+
+        return maxSpectrum / spectralSum
+
     def flatness(self):
         """
         Compute the spectral flatness (ratio between geometric and arithmetic means)
@@ -146,8 +159,28 @@ class Spectrum(numpy.ndarray):
         Plot the spectrum using matplotlib
         """
         plt.plot(abs(self))
-        plt.xlim(0, len(self) / 2)
+        plt.xlim(0, len(self))
         plt.show()
+
+    def rolloff(self):
+        """
+        Determine the spectral rolloff, i.e. the frequency below which 85% of the spectrum's energy
+        is located
+        """
+        absSpectrum = abs(self)
+        spectralSum = numpy.sum(absSpectrum)
+
+        rolloffSum = 0
+        rolloffIndex = 0
+        for i in range(0, len(self)):
+            rolloffSum = rolloffSum + absSpectrum[i]
+            if rolloffSum > (0.85 * spectralSum):
+                rolloffIndex = i
+                break
+
+        # Convert the index into a frequency
+        frequency = rolloffIndex * (self.sampleRate / 2.0) / len(self)
+        return frequency
 
     def skewness(self):
         """
@@ -183,7 +216,3 @@ class Spectrum(numpy.ndarray):
         Compute the spectral variance (second spectral moment)
         """
         return numpy.var(abs(self))
-
-    # TODO
-    # Crest
-    # Rolloff
