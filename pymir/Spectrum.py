@@ -11,6 +11,9 @@ import numpy
 from numpy import *
 
 import scipy.stats
+import scipy.stats.mstats
+
+import matplotlib.pyplot as plt
 
 import pymir
 from pymir import MFCC, Pitch, Transforms
@@ -66,7 +69,9 @@ class Spectrum(numpy.ndarray):
     
     def centroid(self):
         """
-        Compute the spectral centroid
+        Compute the spectral centroid.
+        Characterizes the "center of gravity" of the spectrum.
+        Approximately related to timbral "brightness"
         """
         binNumber = 0
         
@@ -90,6 +95,15 @@ class Spectrum(numpy.ndarray):
         Compute the 12-ET chroma vector from this spectrum
         """
         return Pitch.chroma(self)
+
+    def flatness(self):
+        """
+        Compute the spectral flatness (ratio between geometric and arithmetic means)
+        """
+        geometricMean = scipy.stats.mstats.gmean(abs(self))
+        arithmeticMean = self.mean()
+
+        return geometricMean / arithmeticMean
         
     def idct(self):
         """
@@ -107,13 +121,13 @@ class Spectrum(numpy.ndarray):
         """
         Compute the spectral kurtosis (fourth spectral moment)
         """
-        return scipy.stats.kurtosis(self)
+        return scipy.stats.kurtosis(abs(self))
 
     def mean(self):
         """
         Compute the spectral mean (first spectral moment)
         """
-        return numpy.mean(self)
+        return numpy.sum(abs(self)) / len(self)
 
     def mfcc(self, m, NumFilters = 48):
         """
@@ -127,26 +141,53 @@ class Spectrum(numpy.ndarray):
         """
         return MFCC.mfcc2(self)
 
+    def plot(self):
+        """
+        Plot the spectrum using matplotlib
+        """
+        plt.plot(abs(self))
+        plt.xlim(0, len(self) / 2)
+        plt.show()
+
     def skewness(self):
         """
         Compute the spectral skewness (third spectral moment)
         """
-        return scipy.stats.skew(self)
+        return scipy.stats.skew(abs(self))
+
+    def spread(self):
+        """
+        Compute the spectral spread (basically a variance of the spectrum around the spectral centroid)
+        """
+        centroid = self.centroid()
+
+        binNumber = 0
+        
+        numerator = 0
+        denominator = 0
+        
+        for bin in self:
+            # Compute center frequency
+            f = (self.sampleRate / 2.0) / len(self) 
+            f = f * binNumber
+            
+            numerator = numerator + (((f - centroid) ** 2) * abs(bin))
+            denominator = denominator + abs(bin)
+            
+            binNumber = binNumber + 1
+            
+        return math.sqrt((numerator * 1.0) / denominator)
 
     def variance(self):
         """
         Compute the spectral variance (second spectral moment)
         """
-        return numpy.var(self)
+        return numpy.var(abs(self))
 
     # TODO
     # Bandwidth    
     # Cepstrum?
     # Crest
-    # Flatness
-    # Kurtosis
     # Rolloff
-    # Skewness
-    # Spread
     # Tilt
     

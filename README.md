@@ -20,6 +20,9 @@ PyMIR is a Python library for common tasks in Music Information Retrieval (MIR)
     * Zero-crossing rate
 * Spectral feature extraction (Spectrum class)
     * Spectral Centroid
+    * Spectral Flatness
+    * Spectral Moments (mean, variance, skewness, kurtosis)
+    * Spectral Spread
     * Chroma
     * Inverse Discrete Cosine Transform
     * Inverse FFT
@@ -50,6 +53,9 @@ The standard workflow for working with PyMIR is:
 #### Fixed frame size
     fixedFrames = wavData.frames(1024)
 
+    windowFunction = numpy.hamming
+    fixedFrames = audiofile.frames(1024, windowFunction)
+
 #### Using an onset detector
 	from pymir.audio import onsets
 	energyOnsets = onsets.onsetsByEnergy(wavData)
@@ -59,6 +65,8 @@ The standard workflow for working with PyMIR is:
     fixedFrames[0].cqt() 						# Constant Q Transform
     fixedFrames[0].dct() 						# Discrete Cosine Transform
     fixedFrames[0].energy(windowSize = 256) 	# Energy
+    fixedFrames[0].play()                       # Playback using pyAudio
+    fixedFrames[0].plot()                       # Plot using matplotlib
     fixedFrames[0].rms() 						# Root-mean-squared amplitude
     fixedFrames[0].zcr() 						# Zero-crossing raate
 
@@ -67,8 +75,16 @@ The standard workflow for working with PyMIR is:
 	spectra = [f.spectrum() for f in fixedFrames]
     spectra[0].centroid() 						# Spectral Centroid
     spectra[0].chroma()							# Chroma vector
+    spectra[0].flatness()                       # Spectral Flatness
     spectra[0].idct()							# Inverse DCT
     spectra[0].ifft()							# Inverse FFT
+    spectra[0].kurtosis()                       # Spectral Kurtosis
+    spectra[0].mean()                           # Spectral Mean
+    spectra[0].mfcc2()                          # MFCC (vectorized implementation)
+    spectra[0].plot()                           # Plot using matplotlib
+    spectra[0].skewness()                       # Spectral Skewness
+    spectra[0].spread()                         # Spectral Spread
+    spectra[0].variance()                       # Spectral Variance
 
     from pymir import SpectralFlux
 
