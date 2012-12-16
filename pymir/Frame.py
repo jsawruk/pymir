@@ -13,6 +13,8 @@ from numpy.lib import stride_tricks
 
 import scipy
 
+import matplotlib.pyplot as plt
+
 from pymir import Spectrum, Transforms
 import pyaudio
 
@@ -95,11 +97,11 @@ class Frame(numpy.ndarray):
         # Create a view of signal who's shape is (n, windowSize). Use stride_tricks such that each stide jumps only one item.
         p = numpy.power(signal,2)
         s = stride_tricks.as_strided(p,shape=(n, windowSize), strides=(self.itemsize, self.itemsize))
-        e = numpy.dot(s,window) / windowSize
+        e = numpy.dot(s, window) / windowSize
         e.shape = (e.shape[0], )
         return e
     
-    def frames(self, frameSize):
+    def frames(self, frameSize, windowFunction = None):
         """
         Decompose this frame into smaller frames of size frameSize
         """
@@ -108,8 +110,22 @@ class Frame(numpy.ndarray):
         end = frameSize
         while start < len(self):
             
-            frames.append(self[start:end])
-            
+            if windowFunction == None:
+                frames.append(self[start:end])
+            else:
+                window = windowFunction(frameSize)
+                window.shape = (frameSize, 1)
+                window =  numpy.squeeze(window)
+                frame = self[start:end]
+                if len(frame) < len(window):
+                    # Zero pad
+                    diff = len(window) - len(frame)
+                    for i in range(0, diff):
+                        frame = numpy.append(frame, 0)
+       
+                windowedFrame = frame * window
+                frames.append(windowedFrame)
+
             start = start + frameSize
             end = end + frameSize
             
@@ -142,6 +158,15 @@ class Frame(numpy.ndarray):
         stream.stop_stream()
         stream.close()
         p.terminate()
+
+    def plot(self):
+        """
+        Plot the frame using matplotlib
+        """
+        plt.plot(self)
+        plt.xlim(0, len(self))
+        plt.ylim(-1.5, 1.5)
+        plt.show()
 
     def rms(self):
         """

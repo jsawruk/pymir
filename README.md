@@ -6,6 +6,7 @@ PyMIR is a Python library for common tasks in Music Information Retrieval (MIR)
 * [Scipy](http://www.scipy.org/)
 * [FFmpeg executable](http://ffmpeg.org/)
 * [PyAudio](http://people.csail.mit.edu/hubert/pyaudio/) (for playback)
+* [Matplotlib](http://matplotlib.org/) (for graphing)
 
 ## Features
 * Read WAV files (using scipy) and MP3 files (using FFmpeg)

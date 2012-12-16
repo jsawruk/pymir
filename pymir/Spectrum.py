@@ -10,6 +10,8 @@ import math
 import numpy
 from numpy import *
 
+import scipy.stats
+
 import pymir
 from pymir import MFCC, Pitch, Transforms
 
@@ -84,31 +86,11 @@ class Spectrum(numpy.ndarray):
         return (numerator * 1.0) / denominator
     
     def chroma(self):
-        return Pitch.chroma(self)
         """
         Compute the 12-ET chroma vector from this spectrum
         """
-        chroma = [0] * 12
-        for index in range(0, len(self)):
-            
-            # Assign a frequency value to each bin
-            f = index * (self.sampleRate / 2.0) / len(self)
-            
-            # Convert frequency to pitch to pitch class
-            if f != 0:
-                pitch = int(round(69 + 12 * math.log(f / 440.0, 2)))
-            else:
-                pitch = 0
-            pitchClass = pitch % 12
-            
-            chroma[pitchClass] = chroma[pitchClass] + abs(self[index])
+        return Pitch.chroma(self)
         
-        # Normalize the chroma vector
-        maxElement = max(chroma)
-        chroma = [c / maxElement for c in chroma]
-        
-        return chroma
-    
     def idct(self):
         """
         Compute the Inverse Discrete Cosine Transform (IDCT)
@@ -121,6 +103,18 @@ class Spectrum(numpy.ndarray):
         """
         return Transforms.ifft(self)
 
+    def kurtosis(self):
+        """
+        Compute the spectral kurtosis (fourth spectral moment)
+        """
+        return scipy.stats.kurtosis(self)
+
+    def mean(self):
+        """
+        Compute the spectral mean (first spectral moment)
+        """
+        return numpy.mean(self)
+
     def mfcc(self, m, NumFilters = 48):
         """
         Compute the Mth Mel-Frequency Cepstral Coefficient
@@ -128,7 +122,22 @@ class Spectrum(numpy.ndarray):
         return MFCC.mfcc(self, m, NumFilters)
 
     def mfcc2(self):
+        """
+        Vectorized MFCC implementation
+        """
         return MFCC.mfcc2(self)
+
+    def skewness(self):
+        """
+        Compute the spectral skewness (third spectral moment)
+        """
+        return scipy.stats.skew(self)
+
+    def variance(self):
+        """
+        Compute the spectral variance (second spectral moment)
+        """
+        return numpy.var(self)
 
     # TODO
     # Bandwidth    
