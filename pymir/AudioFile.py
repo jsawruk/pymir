@@ -100,7 +100,8 @@ class AudioFile(Frame.Frame):
             samples = samples.astype('float32') / 32767.0
 
             # Get left channel
-            samples = samples[:, 0]
+            if len(samples.shape) > 1:
+                samples = samples[:, 0]
 
             audioFile = samples.view(AudioFile)
             audioFile.sampleRate = sampleRate

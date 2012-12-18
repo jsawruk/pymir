@@ -1,7 +1,7 @@
 """
 Spectrum class
 ndarray subclass for spectral data
-Last updated: 9 December 2012
+Last updated: 17 December 2012
 """
 from __future__ import division
 
@@ -148,11 +148,11 @@ class Spectrum(numpy.ndarray):
         """
         return MFCC.mfcc(self, m, NumFilters)
 
-    def mfcc2(self):
+    def mfcc2(self, numFilters = 32):
         """
         Vectorized MFCC implementation
         """
-        return MFCC.mfcc2(self)
+        return MFCC.mfcc2(self, numFilters)
 
     def plot(self):
         """
