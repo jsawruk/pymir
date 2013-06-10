@@ -95,7 +95,7 @@ class Frame(numpy.ndarray):
         n = N - windowSize #number of windowed samples.
     
         # Create a view of signal who's shape is (n, windowSize). Use stride_tricks such that each stide jumps only one item.
-        p = numpy.power(signal,2)
+        p = numpy.power(self,2)
         s = stride_tricks.as_strided(p,shape=(n, windowSize), strides=(self.itemsize, self.itemsize))
         e = numpy.dot(s, window) / windowSize
         e.shape = (e.shape[0], )
