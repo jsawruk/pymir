@@ -17,12 +17,9 @@ import matplotlib.pyplot as plt
 # Load the audio
 print "Loading Audio"
 audiofile = AudioFile.open("../audio_files/test-stereo.mp3")
-#audiofile = AudioFile.open("/Users/jsawruk/mir-samples/foo-fighters/01-The-Pretender.mp3")
 
 plt.plot(audiofile)
 plt.show()
-
-#audiofile = audiofile[:100000]
 
 print "Finding onsets using Spectral Flux (spectral domain)"
 o = Onsets.onsetsByFlux(audiofile)
@@ -46,6 +43,8 @@ startIndex = 0
 for frame in frames:
 	spectrum = frame.spectrum()
 	chroma = spectrum.chroma()
+	print chroma
+	
 	chord, score = Pitch.getChord(chroma)
 
 	endIndex = startIndex + len(frame)

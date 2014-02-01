@@ -71,7 +71,7 @@ class AudioFile(Frame.Frame):
         """
         filename = filename.lower()
         
-        if filename.endswith('mp3'):
+        if filename.endswith('mp3') or filename.endswith('m4a'):
             
             ffmpeg = Popen([
             "ffmpeg",

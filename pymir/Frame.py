@@ -1,7 +1,7 @@
 """
 Frame class
 ndarray subclass for time-series data
-Last updated: 15 December 2012
+Last updated: 31 January 2014
 """
 import math
 from math import *
@@ -15,6 +15,7 @@ import scipy
 
 import matplotlib.pyplot as plt
 
+import pymir
 from pymir import Spectrum, Transforms
 import pyaudio
 
@@ -119,9 +120,15 @@ class Frame(numpy.ndarray):
                 frame = self[start:end]
                 if len(frame) < len(window):
                     # Zero pad
+                    frameType = frame.__class__.__name__
+
                     diff = len(window) - len(frame)
-                    for i in range(0, diff):
-                        frame = numpy.append(frame, 0)
+                    frame = numpy.append(frame, [0] * diff)
+                    
+                    if frameType == "AudioFile":
+                        frame = frame.view(pymir.AudioFile)
+                    else:
+                        frame = frame.view(Frame)
        
                 windowedFrame = frame * window
                 frames.append(windowedFrame)
