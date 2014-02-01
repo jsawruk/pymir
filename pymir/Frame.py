@@ -122,6 +122,10 @@ class Frame(numpy.ndarray):
                     # Zero pad
                     frameType = frame.__class__.__name__
 
+                    sampleRate = frame.sampleRate
+                    channels = frame.channels
+                    format = frame.format
+
                     diff = len(window) - len(frame)
                     frame = numpy.append(frame, [0] * diff)
                     
@@ -129,6 +133,11 @@ class Frame(numpy.ndarray):
                         frame = frame.view(pymir.AudioFile)
                     else:
                         frame = frame.view(Frame)
+
+                    # Restore frame properties
+                    frame.sampleRate = sampleRate
+                    frame.channels = channels
+                    frame.format = format
        
                 windowedFrame = frame * window
                 frames.append(windowedFrame)
