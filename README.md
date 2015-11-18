@@ -18,6 +18,9 @@ PyMIR is a Python library for common tasks in Music Information Retrieval (MIR)
     * RMS
     * Spectrum (FFT)
     * Zero-crossing rate
+    * Linear Predictive Components (LPC)
+    * Linear Predictive Cepstral Components (LPCC) from LPC
+    * Line Spectrum Pairs (LSP) / Line Spectrum Frequencies (LSF) from LPC
 * Spectral feature extraction (Spectrum class)
     * Spectral Centroid
     * Spectral Flatness
@@ -34,6 +37,7 @@ PyMIR is a Python library for common tasks in Music Information Retrieval (MIR)
     * Naive pitch estimation
     * Onset detectors (energy, flux)
     * Spectral Flux
+    * Delta computation of features (Useful for speech processing)
 
 ## Examples
 
@@ -72,6 +76,9 @@ The standard workflow for working with PyMIR is:
     fixedFrames[0].plot()                       # Plot using matplotlib
     fixedFrames[0].rms() 						# Root-mean-squared amplitude
     fixedFrames[0].zcr() 						# Zero-crossing raate
+    fixedFrames[0].lpc()                        # LPC, with order = len(fixedFrames[0])-1
+    fixedFrames[0].lpcc()                       # LPCC, with order = len(fixedFrames[0])-1
+    fixedFrames[0].lsp()                        # LSP/LSF, with order = len(fixedFrames[0])-1
 
 ### Extracting spectral features
     # Compute the spectra of each frame
@@ -96,6 +103,12 @@ The standard workflow for working with PyMIR is:
 	# Compute the spectral flux
 	flux = SpectralFlux.spectralFlux(spectra, rectify = True)
 
+    from pymir.Deltas import getDeltas
+    # Computing delta and delta-deltas
+    deltas = getDeltas([1,2,3,4,5])
+    print deltas # array([ 1.  ,  2.  ,  3.  ,  4.  ,  5.  ,  0.5 ,  0.8 ,  1.  ,  0.8 ,
+        0.5 ,  0.13,  0.11,  0.  , -0.11, -0.13])
+
 ### Audio playback
 
 Playback is provided on all AudioFile and Frame objects. Internal representation is 32-bit floating point.
@@ -107,7 +120,7 @@ Playback is provided on all AudioFile and Frame objects. Internal representation
 
 Naive chord estimation using a dictionary of the 24 major and minor triads only, represented as
 normalized chroma vectors. Similarity is measured using the cosine similarity function. The closest
-match is returned (as a string). 
+match is returned (as a string).
 
 This is called a naive approach because it does not consider preceding chords, which could improve
 chord estimation accuracy.
