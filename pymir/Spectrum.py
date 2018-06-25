@@ -19,7 +19,7 @@ import pymir
 from pymir import MFCC, Pitch, Transforms
 
 class Spectrum(numpy.ndarray):
-    
+
     def __new__(subtype, shape, dtype=float, buffer=None, offset=0,
           strides=None, order=None):
         # Create the ndarray instance of our type, given the usual
@@ -28,12 +28,12 @@ class Spectrum(numpy.ndarray):
         # It also triggers a call to InfoArray.__array_finalize__
         obj = numpy.ndarray.__new__(subtype, shape, dtype, buffer, offset, strides,
                          order)
-        
+
         obj.sampleRate = 0
-        
+
         # Finally, we must return the newly created object:
         return obj
-    
+
     def __array_finalize__(self, obj):
         # ``self`` is a new object resulting from
         # ndarray.__new__(InfoArray, ...), therefore it only has
@@ -58,15 +58,15 @@ class Spectrum(numpy.ndarray):
         # method sees all creation of default objects - with the
         # InfoArray.__new__ constructor, but also with
         # arr.view(InfoArray).
-        
+
         self.sampleRate = getattr(obj, 'sampleRate', None)
-        
+
         # We do not need to return anything
-        
+
     #####################
     # Spectrum methods
     #####################
-    
+
     def centroid(self):
         """
         Compute the spectral centroid.
@@ -74,22 +74,22 @@ class Spectrum(numpy.ndarray):
         Approximately related to timbral "brightness"
         """
         binNumber = 0
-        
+
         numerator = 0
         denominator = 0
-        
+
         for bin in self:
             # Compute center frequency
-            f = (self.sampleRate / 2.0) / len(self) 
+            f = (self.sampleRate / 2.0) / len(self)
             f = f * binNumber
-            
+
             numerator = numerator + (f * abs(bin))
             denominator = denominator + abs(bin)
-            
+
             binNumber = binNumber + 1
-            
+
         return (numerator * 1.0) / denominator
-    
+
     def chroma(self):
         """
         Compute the 12-ET chroma vector from this spectrum
@@ -98,7 +98,7 @@ class Spectrum(numpy.ndarray):
 
     def crest(self):
         """
-        Compute the spectral crest factor, i.e. the ratio of the maximum of the spectrum to the 
+        Compute the spectral crest factor, i.e. the ratio of the maximum of the spectrum to the
         sum of the spectrum
         """
         absSpectrum = abs(self)
@@ -117,13 +117,13 @@ class Spectrum(numpy.ndarray):
         arithmeticMean = self.mean()
 
         return geometricMean / arithmeticMean
-        
+
     def idct(self):
         """
         Compute the Inverse Discrete Cosine Transform (IDCT)
         """
         return Transforms.idct(self)
-    
+
     def ifft(self):
         """
         Compute the Inverse FFT
@@ -195,20 +195,20 @@ class Spectrum(numpy.ndarray):
         centroid = self.centroid()
 
         binNumber = 0
-        
+
         numerator = 0
         denominator = 0
-        
+
         for bin in self:
             # Compute center frequency
-            f = (self.sampleRate / 2.0) / len(self) 
+            f = (self.sampleRate / 2.0) / len(self)
             f = f * binNumber
-            
+
             numerator = numerator + (((f - centroid) ** 2) * abs(bin))
             denominator = denominator + abs(bin)
-            
+
             binNumber = binNumber + 1
-            
+
         return math.sqrt((numerator * 1.0) / denominator)
 
     def variance(self):

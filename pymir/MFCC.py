@@ -15,42 +15,42 @@ import scipy
 from scipy.fftpack import *
 
 def mfcc2(spectrum, numFilters = 32):
-	"""
-	Alternative (and vectorized) MFCC computation from Steve Tjoa
-	"""
-	fb = filterbank(spectrum, spectrum.sampleRate, numFilters)
-	coeff = scipy.fftpack.dct(scipy.log(fb), type = 2, norm = 'ortho')
-	return coeff
+    """
+    Alternative (and vectorized) MFCC computation from Steve Tjoa
+    """
+    fb = filterbank(spectrum, spectrum.sampleRate, numFilters)
+    coeff = scipy.fftpack.dct(scipy.log(fb), type = 2, norm = 'ortho')
+    return coeff
 
 def filterbank(x, fs, numFilters):
-	n = len(x)
-	m = 2 ** (1.0 / 6)
-	f2 = 110.0
-	f1 = f2 / m
-	f3 = f2 * m
-	fb = scipy.array(scipy.zeros(numFilters))
-	for i in range(numFilters):
-		fb[i] = numpy.absolute(fbwin(x, fs, f1, f2, f3))
-		f1 = f2
-		f2 = f3
- 		f3 = f3 * m
-	
-	return fb
+    n = len(x)
+    m = 2 ** (1.0 / 6)
+    f2 = 110.0
+    f1 = f2 / m
+    f3 = f2 * m
+    fb = scipy.array(scipy.zeros(numFilters))
+    for i in range(numFilters):
+        fb[i] = numpy.absolute(fbwin(x, fs, f1, f2, f3))
+        f1 = f2
+        f2 = f3
+        f3 = f3 * m
+
+    return fb
 
 def fbwin(x, fs, f1, f2, f3):
-	n = len(x)
-	b1 = int(n * f1 / fs)
-	b2 = int(n * f2 / fs)
-	b3 = int(n * f3 / fs)
-	y = x[b2]
-	
-	for b in range(b1, b2):
-		y = y + x[b] * (b - b1) / (b2 - b1)
-	
-	for b in range(b2 + 1, b3):
-		y = y + x[b] * (1 - (b - b2) / (b3 - b2))
-	
-	return y
+    n = len(x)
+    b1 = int(n * f1 / fs)
+    b2 = int(n * f2 / fs)
+    b3 = int(n * f3 / fs)
+    y = x[b2]
+
+    for b in range(b1, b2):
+        y = y + x[b] * (b - b1) / (b2 - b1)
+
+    for b in range(b2 + 1, b3):
+        y = y + x[b] * (1 - (b - b2) / (b3 - b2))
+
+    return y
 
 def mfcc(spectrum, m, NumFilters = 48):
     """
@@ -77,7 +77,7 @@ def mfcc(spectrum, m, NumFilters = 48):
             innerSum = log(innerSum) # The log of 0 is undefined, so don't use it
 
         innerSum = innerSum * math.cos(((m * math.pi) / NumFilters) * (filterBand - 0.5))
-        
+
         outerSum = outerSum + innerSum
 
     result = result * outerSum
@@ -86,7 +86,7 @@ def mfcc(spectrum, m, NumFilters = 48):
 
 def normalizationFactor(NumFilters, m):
     """
-    Intermediate computation used by mfcc function. 
+    Intermediate computation used by mfcc function.
     Computes a normalization factor
     """
     normalizationFactor = 0
@@ -100,7 +100,7 @@ def normalizationFactor(NumFilters, m):
 
 def filterParameter(binSize, frequencyBand, filterBand, samplingRate):
     """
-    Intermediate computation used by the mfcc function. 
+    Intermediate computation used by the mfcc function.
     Compute the filter parameter for the specified frequency and filter bands
     """
     filterParameter = 0
@@ -111,15 +111,15 @@ def filterParameter(binSize, frequencyBand, filterBand, samplingRate):
 
     if boundary >= 0 and boundary < prevCenterFrequency:
         filterParameter = 0
-    
+
     elif boundary >= prevCenterFrequency and boundary < thisCenterFrequency:
         filterParameter = (boundary - prevCenterFrequency) / (thisCenterFrequency - prevCenterFrequency)
         filterParameter = filterParameter * getMagnitudeFactor(filterBand)
-    
+
     elif boundary >= thisCenterFrequency and boundary < nextCenterFrequency:
             filterParameter = (boundary - nextCenterFrequency) / (thisCenterFrequency - nextCenterFrequency)
             filterParameter = filterParameter * getMagnitudeFactor(filterBand)
-    
+
     elif boundary >= nextCenterFrequency and boundary < samplingRate:
             filterParameter = 0
 
@@ -127,11 +127,11 @@ def filterParameter(binSize, frequencyBand, filterBand, samplingRate):
 
 def getMagnitudeFactor(filterBand):
     """
-    Intermediate computation used by the mfcc function. 
+    Intermediate computation used by the mfcc function.
     Compute the band-dependent magnitude factor for the given filter band
     """
     magnitudeFactor = 0
-    
+
     if filterBand >= 1 and filterBand <= 14:
         magnitudeFactor = 0.015
     elif filterBand >= 15 and filterBand <= 48:
@@ -141,7 +141,7 @@ def getMagnitudeFactor(filterBand):
 
 def getCenterFrequency(filterBand):
     """
-    Intermediate computation used by the mfcc function. 
+    Intermediate computation used by the mfcc function.
     Compute the center frequency (fc) of the specified filter band (l)
     This where the mel-frequency scaling occurs. Filters are specified so that their
     center frequencies are equally spaced on the mel scale
@@ -156,5 +156,5 @@ def getCenterFrequency(filterBand):
         exponent = filterBand - 14
         centerFrequency = math.pow(1.0711703, exponent)
         centerFrequency = centerFrequency * 1073.4
-    
+
     return centerFrequency

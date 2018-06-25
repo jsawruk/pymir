@@ -1,4 +1,4 @@
-""" 
+"""
 energy.py
 Compute energy and related quantities
 Last updated: 15 December 2012
@@ -24,7 +24,7 @@ def energy(audioData, windowSize = 256):
 
     window = numpy.hamming(windowSize)
     window.shape = (windowSize, 1)
-    
+
     n = N - windowSize # number of windowed samples.
 
     # Create a view of audioData who's shape is (n, windowSize). Use stride_tricks such that each stide jumps only one item.
@@ -45,7 +45,7 @@ def dEnergy(audioData, windowSize = 256):
 
     window = numpy.hamming(windowSize)
     window.shape = (windowSize, 1)
-    
+
     n = N - windowSize # number of windowed samples.
 
     # Create a view of diffE who's shape is (n, windowSize). Use stride_tricks such that each stide jumps only one item.
@@ -67,7 +67,7 @@ def dLogEnergy(audioData, windowSize = 256):
 
     window = numpy.hamming(windowSize)
     window.shape = (windowSize, 1)
-    
+
     n = N - windowSize # number of windowed samples.
 
     # Create a view of diffLogE who's shape is (n, windowSize). Use stride_tricks such that each stide jumps only one item.
