@@ -20,7 +20,7 @@ from pymir import Spectrum, Transforms
 import pyaudio
 
 class Frame(numpy.ndarray):
-    
+
     def __new__(subtype, shape, dtype=float, buffer=None, offset=0,
           strides=None, order=None):
         # Create the ndarray instance of our type, given the usual
@@ -29,14 +29,14 @@ class Frame(numpy.ndarray):
         # It also triggers a call to InfoArray.__array_finalize__
         obj = numpy.ndarray.__new__(subtype, shape, dtype, buffer, offset, strides,
                          order)
-        
+
         obj.sampleRate = 0
         obj.channels = 1
         obj.format = pyaudio.paFloat32
-        
+
         # Finally, we must return the newly created object:
         return obj
-    
+
     def __array_finalize__(self, obj):
         # ``self`` is a new object resulting from
         # ndarray.__new__(InfoArray, ...), therefore it only has
@@ -61,29 +61,29 @@ class Frame(numpy.ndarray):
         # method sees all creation of default objects - with the
         # InfoArray.__new__ constructor, but also with
         # arr.view(InfoArray).
-        
+
         self.sampleRate = getattr(obj, 'sampleRate', None)
         self.channels = getattr(obj, 'channels', None)
         self.format = getattr(obj, 'format', None)
-        
+
         # We do not need to return anything
-        
+
     #####################
     # Frame methods
     #####################
-    
+
     def cqt(self):
         """
         Compute the Constant Q Transform (CQT)
         """
         return Transforms.cqt(self)
-    
+
     def dct(self):
         """
         Compute the Discrete Cosine Transform (DCT)
         """
         return Transforms.dct(self)
-    
+
     def energy(self, windowSize = 256):
         """
         Compute the energy of this frame
@@ -92,16 +92,16 @@ class Frame(numpy.ndarray):
 
         window = numpy.hamming(windowSize)
         window.shape = (windowSize, 1)
-        
+
         n = N - windowSize #number of windowed samples.
-    
+
         # Create a view of signal who's shape is (n, windowSize). Use stride_tricks such that each stide jumps only one item.
         p = numpy.power(self,2)
         s = stride_tricks.as_strided(p,shape=(n, windowSize), strides=(self.itemsize, self.itemsize))
         e = numpy.dot(s, window) / windowSize
         e.shape = (e.shape[0], )
         return e
-    
+
     def frames(self, frameSize, windowFunction = None):
         """
         Decompose this frame into smaller frames of size frameSize
@@ -110,7 +110,7 @@ class Frame(numpy.ndarray):
         start = 0
         end = frameSize
         while start < len(self):
-            
+
             if windowFunction == None:
                 frames.append(self[start:end])
             else:
@@ -128,7 +128,7 @@ class Frame(numpy.ndarray):
 
                     diff = len(window) - len(frame)
                     frame = numpy.append(frame, [0] * diff)
-                    
+
                     if frameType == "AudioFile":
                         frame = frame.view(pymir.AudioFile)
                     else:
@@ -138,15 +138,15 @@ class Frame(numpy.ndarray):
                     frame.sampleRate = sampleRate
                     frame.channels = channels
                     frame.format = format
-       
+
                 windowedFrame = frame * window
                 frames.append(windowedFrame)
 
             start = start + frameSize
             end = end + frameSize
-            
+
         return frames
-    
+
     def framesFromOnsets(self, onsets):
         """
         Decompose into frames based on onset start time-series
@@ -191,11 +191,11 @@ class Frame(numpy.ndarray):
         sum = 0
         for i in range(0, len(self)):
             sum = sum + self[i] ** 2
-            
+
         sum = sum / (1.0 * len(self))
-        
+
         return math.sqrt(sum)
-    
+
     # Spectrum
     def spectrum(self):
         """
@@ -212,5 +212,5 @@ class Frame(numpy.ndarray):
         for i in range(1, len(self)):
             if (self[i - 1] * self[i]) < 0:
                 zcr = zcr + 1
-                
+
         return zcr / (1.0 * len(self))
